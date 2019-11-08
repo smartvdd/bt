@@ -40,7 +40,7 @@ public class NetworkUtil {
         try {
             Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
             outer:
-            while (networkInterfaces.hasMoreElements()) {
+            while (networkInterfaces != null && networkInterfaces.hasMoreElements()) {
                 NetworkInterface networkInterface = networkInterfaces.nextElement();
                 Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
                 while (inetAddresses.hasMoreElements()) {
