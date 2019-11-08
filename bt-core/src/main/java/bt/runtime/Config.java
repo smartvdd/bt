@@ -67,7 +67,7 @@ public class Config {
     public Config() {
         this.acceptorAddress = NetworkUtil.getInetAddressFromNetworkInterfaces();
         this.acceptorPort = 6891;
-        this.peerDiscoveryInterval = Duration.ofSeconds(5);
+        this.peerDiscoveryInterval = Duration.ofSeconds(1);
         this.peerConnectionRetryInterval = Duration.ofMinutes(5);
         this.peerConnectionRetryCount = 3;
         this.peerConnectionTimeout = Duration.ofSeconds(30);

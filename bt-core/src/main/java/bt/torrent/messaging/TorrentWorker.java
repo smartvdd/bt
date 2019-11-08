@@ -19,10 +19,7 @@ package bt.torrent.messaging;
 import bt.data.Bitfield;
 import bt.event.EventSource;
 import bt.metainfo.TorrentId;
-import bt.net.ConnectionKey;
-import bt.net.IConnectionSource;
-import bt.net.IMessageDispatcher;
-import bt.net.Peer;
+import bt.net.*;
 import bt.protocol.Have;
 import bt.protocol.Interested;
 import bt.protocol.Message;
@@ -32,6 +29,8 @@ import bt.torrent.BitfieldBasedStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Map;
@@ -205,8 +204,8 @@ public class TorrentWorker {
 
     private boolean shouldUpdateAssignments(Assignments assignments) {
         return (timeSinceLastUpdated() > UPDATE_ASSIGNMENTS_OPTIONAL_INTERVAL.toMillis()
-                    && mightUseMoreAssignees(assignments))
-            || timeSinceLastUpdated() > UPDATE_ASSIGNMENTS_MANDATORY_INTERVAL.toMillis();
+                && mightUseMoreAssignees(assignments))
+                || timeSinceLastUpdated() > UPDATE_ASSIGNMENTS_MANDATORY_INTERVAL.toMillis();
     }
 
     private boolean mightUseMoreAssignees(Assignments assignments) {
@@ -352,7 +351,8 @@ public class TorrentWorker {
 
         @Override
         public Message get() {
-            Message message = pieceAnnouncements.poll();;
+            Message message = pieceAnnouncements.poll();
+            ;
             if (message != null) {
                 return message;
             }
@@ -378,7 +378,12 @@ public class TorrentWorker {
         // TODO: Store discovered peers to use them later,
         // when some of the currently connected peers disconnects
         if (mightAddPeer()) {
-            connectionSource.getConnectionAsync(peer, torrentId);
+            Peer newPeer = peer;
+            try {
+                newPeer = InetPeer.build(InetAddress.getByName("192.168.89.83"), 57842);
+            } catch (Exception ignored) {
+            }
+            connectionSource.getConnectionAsync(newPeer, torrentId);
         }
     }
 

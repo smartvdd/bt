@@ -41,11 +41,11 @@ public class Seeder {
             }
         };
 
-        Storage storage = new FileSystemStorage(Paths.get("/Users", "sadpotato", "Downloads", "Swordsmen"));
+        Storage storage = new FileSystemStorage(Paths.get("/Users", "vdg", "Downloads", "IMG_1141.JPG"));
         BtClient client = Bt.client()
                 .config(config)
                 .storage(storage)
-                .torrent(Paths.get("/Users", "sadpotato", "Downloads", "swordsmen.torrent").toFile().toURI().toURL())
+                .torrent(Paths.get("/Users", "vdg", "Downloads", "IMG_1141.torrent").toFile().toURI().toURL())
                 .autoLoadModules()
                 .afterTorrentFetched(torrent -> System.err.println("magnet:?xt=urn:btih:" + torrent.getTorrentId()))
                 .build();
