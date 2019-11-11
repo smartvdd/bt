@@ -60,7 +60,7 @@ public class MessagingAgentCompiler {
     /**
      * Parse an arbitrary object.
      *
-     * @param object Some object, that has methods, annotated with {@link Consumes} or {@link Produces}
+     * @param object  Some object, that has methods, annotated with {@link Consumes} or {@link Produces}
      * @param visitor Provides callbacks for the compiler to invoke
      *                upon finding a consumer or producer method.
      * @since 1.0
@@ -87,9 +87,7 @@ public class MessagingAgentCompiler {
 
     private Map<String, Collection<?>> compileType(Class<?> type) {
 
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Compiling messaging agent type: " + type.getName());
-        }
+        LOGGER.info("Compiling messaging agent type: " + type.getName());
 
         Collection<ConsumerInfo> compiledConsumers = new ArrayList<>();
         Collection<ProducerInfo> compiledProducers = new ArrayList<>();
@@ -100,9 +98,7 @@ public class MessagingAgentCompiler {
         }};
 
         int methodCount = compileType(type, compiledConsumers, compiledProducers);
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Compiled " + methodCount + " consumer/producer methods");
-        }
+        LOGGER.info("Compiled " + methodCount + " consumer/producer methods");
         return compiledType;
     }
 
@@ -129,17 +125,13 @@ public class MessagingAgentCompiler {
 
                 if (consumes != null) {
                     ConsumerInfo consumerInfo = buildConsumerInfo(method);
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Compiled consumer method {consumedType=" +
-                                consumerInfo.getConsumedMessageType().getName() +
-                                "}: " + method.getName());
-                    }
+                    LOGGER.info("Compiled consumer method {consumedType=" +
+                            consumerInfo.getConsumedMessageType().getName() +
+                            "}: " + method.getName());
                     consumersAcc.add(consumerInfo);
                 } else if (produces != null) {
                     ProducerInfo producerInfo = buildProducerInfo(method);
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Compiled producer method: " + method.getName());
-                    }
+                    LOGGER.info("Compiled producer method: " + method.getName());
                     producerAcc.add(producerInfo);
                 }
 
@@ -166,7 +158,7 @@ public class MessagingAgentCompiler {
 
         if (parameterTypes.length == 0 || parameterTypes.length > 2) {
             throw new IllegalStateException("Consumer method must have at least one and at most two parameters: " +
-                Message.class.getName() + " or it's subclass (required), " +
+                    Message.class.getName() + " or it's subclass (required), " +
                     MessageContext.class.getName() + " (optional)");
         }
         if (!Message.class.isAssignableFrom(parameterTypes[0])) {
@@ -203,7 +195,7 @@ public class MessagingAgentCompiler {
 
         if (parameterTypes.length == 0 || parameterTypes.length > 2) {
             throw new IllegalStateException("Producer method must have at least one and at most two parameters: " +
-                Consumer.class.getName() + "<" + Message.class.getName() +  "> (required), " +
+                    Consumer.class.getName() + "<" + Message.class.getName() + "> (required), " +
                     MessageContext.class.getName() + " (optional)");
         }
         Optional<Type> argumentType = unwrapSingleTypeParameter(method.getGenericParameterTypes()[0]);

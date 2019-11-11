@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  * by testing if 'Bundle-SymbolicName' attribute is present in the manifest
  * and if its' value starts with 'com.github.atomashpolskiy.bt'.</p>
  *
- *<p><b>Note that this class implements a service.
+ * <p><b>Note that this class implements a service.
  * Hence, is not a part of the public API and is a subject to change.</b></p>
  */
 public class ClasspathApplicationService implements ApplicationService {
@@ -63,27 +63,19 @@ public class ClasspathApplicationService implements ApplicationService {
         Manifest manifest = null;
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Processing manifest file: " + url.toExternalForm());
-            }
+            LOGGER.info("Processing manifest file: " + url.toExternalForm());
             try (InputStream in = url.openStream()) {
                 Manifest m = new Manifest(in);
                 String bundleName = m.getMainAttributes().getValue(BUNDLE_NAME_KEY);
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug(BUNDLE_NAME_KEY + ": " + bundleName);
-                }
+                LOGGER.info(BUNDLE_NAME_KEY + ": " + bundleName);
                 if (bundleName != null && bundleName.startsWith(BUNDLE_NAME_PREFIX)) {
                     // found our manifest
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Will read version from manifest file: {}", url.toExternalForm());
-                    }
+                    LOGGER.info("Will read version from manifest file: {}", url.toExternalForm());
                     manifest = m;
                     break;
                 }
             } catch (Throwable e) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Failed to read manifest file: " + url.toExternalForm(), e);
-                }
+                LOGGER.info("Failed to read manifest file: " + url.toExternalForm(), e);
             }
         }
 
@@ -92,9 +84,7 @@ public class ClasspathApplicationService implements ApplicationService {
             version = new Version(0, 0, false);
         } else {
             version = parseVersion(manifest.getMainAttributes().getValue(Name.IMPLEMENTATION_VERSION));
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Bt version {}", version);
-            }
+            LOGGER.info("Bt version {}", version);
         }
     }
 

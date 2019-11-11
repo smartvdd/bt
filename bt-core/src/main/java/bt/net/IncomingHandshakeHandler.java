@@ -59,10 +59,8 @@ class IncomingHandshakeHandler implements ConnectionHandler {
         try {
             firstMessage = connection.readMessage(handshakeTimeout.toMillis());
         } catch (IOException e) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Failed to receive handshake from peer: {}. Reason: {} ({})",
-                        peer, e.getClass().getName(), e.getMessage());
-            }
+            LOGGER.info("Failed to receive handshake from peer: {}. Reason: {} ({})",
+                    peer, e.getClass().getName(), e.getMessage());
         }
 
         if (firstMessage != null) {
@@ -82,10 +80,8 @@ class IncomingHandshakeHandler implements ConnectionHandler {
                     try {
                         connection.postMessage(handshake);
                     } catch (IOException e) {
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Failed to send handshake to peer: {}. Reason: {} ({})",
-                                    peer, e.getClass().getName(), e.getMessage());
-                        }
+                        LOGGER.info("Failed to send handshake to peer: {}. Reason: {} ({})",
+                                peer, e.getClass().getName(), e.getMessage());
                         return false;
                     }
                     connection.setTorrentId(torrentId);

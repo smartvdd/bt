@@ -142,9 +142,7 @@ public class TorrentWorker {
         if (existing == null) {
             dispatcher.addMessageConsumer(torrentId, peer, message -> consume(peer, message));
             dispatcher.addMessageSupplier(torrentId, peer, () -> produce(peer));
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Added connection for peer: " + peer);
-            }
+            LOGGER.info("Added connection for peer: " + peer);
         }
     }
 
@@ -234,8 +232,8 @@ public class TorrentWorker {
 
     private boolean shouldUpdateAssignments(Assignments assignments) {
         return (timeSinceLastUpdated() > UPDATE_ASSIGNMENTS_OPTIONAL_INTERVAL.toMillis()
-                    && mightUseMoreAssignees(assignments))
-            || timeSinceLastUpdated() > UPDATE_ASSIGNMENTS_MANDATORY_INTERVAL.toMillis();
+                && mightUseMoreAssignees(assignments))
+                || timeSinceLastUpdated() > UPDATE_ASSIGNMENTS_MANDATORY_INTERVAL.toMillis();
     }
 
     private boolean mightUseMoreAssignees(Assignments assignments) {
@@ -340,9 +338,7 @@ public class TorrentWorker {
         PeerWorker removed = peerMap.remove(peer);
         if (removed != null) {
             disconnectedPeers.add(peer);
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Removed connection for peer: " + peer);
-            }
+            LOGGER.info("Removed connection for peer: " + peer);
         }
     }
 
@@ -388,7 +384,8 @@ public class TorrentWorker {
 
         @Override
         public Message get() {
-            Message message = pieceAnnouncements.poll();;
+            Message message = pieceAnnouncements.poll();
+            ;
             if (message != null) {
                 return message;
             }

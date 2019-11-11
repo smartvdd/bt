@@ -39,7 +39,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 /**
- *<p><b>Note that this class implements a service.
+ * <p><b>Note that this class implements a service.
  * Hence, is not a part of the public API and is a subject to change.</b></p>
  */
 public class PeerConnectionPool implements IPeerConnectionPool {
@@ -121,10 +121,8 @@ public class PeerConnectionPool implements IPeerConnectionPool {
         cleanerLock.lock();
         try {
             if (connections.count() >= config.getMaxPeerConnections()) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Closing newly created connection with {} due to exceeding of connections limit",
-                            newConnection.getRemotePeer());
-                }
+                LOGGER.info("Closing newly created connection with {} due to exceeding of connections limit",
+                        newConnection.getRemotePeer());
                 newConnection.closeQuietly();
             } else {
                 existingConnection = connections.putIfAbsent(newConnection);
@@ -134,9 +132,7 @@ public class PeerConnectionPool implements IPeerConnectionPool {
             cleanerLock.unlock();
         }
         if (existingConnection != null) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Connection already exists for peer: " + newConnection.getRemotePeer());
-            }
+            LOGGER.info("Connection already exists for peer: " + newConnection.getRemotePeer());
             newConnection.closeQuietly();
             newConnection = existingConnection;
         }
@@ -163,9 +159,7 @@ public class PeerConnectionPool implements IPeerConnectionPool {
                     } else if (System.currentTimeMillis() - connection.getLastActive()
                             >= peerConnectionInactivityThreshold.toMillis()) {
 
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Removing inactive peer connection: {}", connection.getRemotePeer());
-                        }
+                        LOGGER.info("Removing inactive peer connection: {}", connection.getRemotePeer());
                         purgeConnection(connection);
                     }
                     // can send keep-alives here based on lastActiveTime

@@ -96,10 +96,8 @@ public class PeerConnectionFactory implements IPeerConnectionFactory {
         try {
             channel = getChannel(inetAddress, port);
         } catch (IOException e) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Failed to establish connection with peer: {}. Reason: {} ({})",
-                        peer, e.getClass().getName(), e.getMessage());
-            }
+            LOGGER.info("Failed to establish connection with peer: {}. Reason: {} ({})",
+                    peer, e.getClass().getName(), e.getMessage());
             return ConnectionResult.failure("I/O error", e);
         }
 
@@ -127,10 +125,8 @@ public class PeerConnectionFactory implements IPeerConnectionFactory {
         try {
             return _createConnection(peer, torrentId, channel, incoming, in, out);
         } catch (Exception e) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Failed to establish connection with peer: {}. Reason: {} ({})",
-                        peer, e.getClass().getName(), e.getMessage());
-            }
+            LOGGER.info("Failed to establish connection with peer: {}. Reason: {} ({})",
+                    peer, e.getClass().getName(), e.getMessage());
             closeQuietly(channel);
             releaseBuffer(in);
             releaseBuffer(out);
@@ -225,15 +221,11 @@ public class PeerConnectionFactory implements IPeerConnectionFactory {
     private boolean initConnection(PeerConnection newConnection, ConnectionHandler connectionHandler) {
         boolean success = connectionHandler.handleConnection(newConnection);
         if (success) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Successfully initialized newly established connection to peer: {}, handshake handler: {}",
-                        newConnection.getRemotePeer(), connectionHandler.getClass().getName());
-            }
+            LOGGER.info("Successfully initialized newly established connection to peer: {}, handshake handler: {}",
+                    newConnection.getRemotePeer(), connectionHandler.getClass().getName());
         } else {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Failed to initialize newly established connection to peer: {}, handshake handler: {}",
-                        newConnection.getRemotePeer(), connectionHandler.getClass().getName());
-            }
+            LOGGER.info("Failed to initialize newly established connection to peer: {}, handshake handler: {}",
+                    newConnection.getRemotePeer(), connectionHandler.getClass().getName());
         }
         return success;
     }
@@ -244,10 +236,8 @@ public class PeerConnectionFactory implements IPeerConnectionFactory {
                 channel.close();
             } catch (IOException e1) {
                 try {
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Failed to close outgoing channel: {}. Reason: {} ({})",
-                                channel.getRemoteAddress(), e1.getClass().getName(), e1.getMessage());
-                    }
+                    LOGGER.info("Failed to close outgoing channel: {}. Reason: {} ({})",
+                            channel.getRemoteAddress(), e1.getClass().getName(), e1.getMessage());
                 } catch (IOException e2) {
                     // ignore
                 }

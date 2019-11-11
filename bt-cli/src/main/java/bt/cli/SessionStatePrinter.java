@@ -40,7 +40,7 @@ public class SessionStatePrinter {
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionStatePrinter.class);
 
     private static final String TORRENT_INFO = "Downloading %s (%,d B)";
-    private static final String DURATION_INFO ="Elapsed time: %s\t\tRemaining time: %s";
+    private static final String DURATION_INFO = "Elapsed time: %s\t\tRemaining time: %s";
     private static final String RATE_FORMAT = "%4.1f %s/s";
     private static final String SESSION_INFO = "Peers: %2d\t\tDown: " + RATE_FORMAT + "\t\tUp: " + RATE_FORMAT + "\t\t";
 
@@ -114,7 +114,7 @@ public class SessionStatePrinter {
     public SessionStatePrinter() {
         try {
             Terminal terminal = new DefaultTerminalFactory(System.out, System.in,
-                     Charset.forName("UTF-8")).createTerminal();
+                    Charset.forName("UTF-8")).createTerminal();
             terminal.setCursorVisible(false);
 
             screen = new TerminalScreen(terminal);
@@ -207,7 +207,7 @@ public class SessionStatePrinter {
             Rate upRate = new Rate(uploaded - this.uploaded);
             int peerCount = sessionState.getConnectedPeers().size();
             String sessionInfo = String.format(SESSION_INFO, peerCount, downRate.getQuantity(), downRate.getMeasureUnit(),
-                upRate.getQuantity(), upRate.getMeasureUnit());
+                    upRate.getQuantity(), upRate.getMeasureUnit());
             graphics.putString(0, 3, sessionInfo);
 
             int completed = sessionState.getPiecesComplete();
@@ -223,13 +223,11 @@ public class SessionStatePrinter {
             // might use RefreshType.DELTA, but it does not tolerate resizing of the window
             screen.refresh(Screen.RefreshType.COMPLETE);
 
-            if (LOGGER.isDebugEnabled()) {
-                if (complete) {
-                    LOGGER.debug(String.format(LOG_ENTRY_SEED, peerCount, upRate.getQuantity(), upRate.getMeasureUnit()));
-                } else {
-                    LOGGER.debug(String.format(LOG_ENTRY, peerCount, downRate.getQuantity(), downRate.getMeasureUnit(),
-                            upRate.getQuantity(), upRate.getMeasureUnit(), completePercents, remainingTime));
-                }
+            if (complete) {
+                LOGGER.info(String.format(LOG_ENTRY_SEED, peerCount, upRate.getQuantity(), upRate.getMeasureUnit()));
+            } else {
+                LOGGER.info(String.format(LOG_ENTRY, peerCount, downRate.getQuantity(), downRate.getMeasureUnit(),
+                        upRate.getQuantity(), upRate.getMeasureUnit(), completePercents, remainingTime));
             }
 
             this.downloaded = downloaded;

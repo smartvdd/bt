@@ -102,7 +102,7 @@ public class UtMetadataMessageHandler implements MessageHandler<UtMetadata> {
 
     private UtMetadata.Type getMessageType(BEMap m) {
         BEInteger type = (BEInteger) m.getValue().get(UtMetadata.messageTypeField());
-        int typeId = type.getValue().intValueExact();
+        int typeId = type.getValue().intValue();
         return UtMetadata.Type.forId(typeId);
     }
 
@@ -119,7 +119,7 @@ public class UtMetadataMessageHandler implements MessageHandler<UtMetadata> {
         if (value == null) {
             throw new IllegalStateException("Message attribute is missing: " + name);
         }
-        return value.getValue().intValueExact();
+        return value.getValue().intValue();
     }
 
     @Override

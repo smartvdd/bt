@@ -68,7 +68,7 @@ public class HttpTracker implements Tracker {
 
     /**
      * @param trackerUrl Tracker URL
-     * @param idService Identity service
+     * @param idService  Identity service
      * @since 1.0
      */
     public HttpTracker(String trackerUrl,
@@ -134,7 +134,7 @@ public class HttpTracker implements Tracker {
             if (baseUrl.endsWith("/")) {
                 baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
             }
-            URL requestUrl = new URL(baseUrl + (baseUri.getRawQuery() == null? "?" : "&") + query);
+            URL requestUrl = new URL(baseUrl + (baseUri.getRawQuery() == null ? "?" : "&") + query);
             requestUri = requestUrl.toURI().toString();
 
         } catch (Exception e) {
@@ -143,10 +143,8 @@ public class HttpTracker implements Tracker {
 
         HttpGet request = new HttpGet(requestUri);
         try {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Executing tracker HTTP request of type " + eventType.name() +
-                        "; request URL: " + requestUri);
-            }
+            LOGGER.info("Executing tracker HTTP request of type " + eventType.name() +
+                    "; request URL: " + requestUri);
             return httpClient.execute(request, httpResponseHandler);
         } catch (IOException e) {
             return TrackerResponse.exceptional(e);
@@ -246,13 +244,13 @@ public class HttpTracker implements Tracker {
         StringBuilder buf = new StringBuilder();
         for (byte b : bytes) {
             char c = (char) b;
-            if   ( (c >= 48 && c <= 57) // 0-9
-                || (c >= 65 && c <= 90) // A-Z
-                || (c >= 97 && c <= 122) // a-z
-                ||  c == 45  // -
-                ||  c == 46  // .
-                ||  c == 95  // _
-                ||  c == 126 // ~
+            if ((c >= 48 && c <= 57) // 0-9
+                    || (c >= 65 && c <= 90) // A-Z
+                    || (c >= 97 && c <= 122) // a-z
+                    || c == 45  // -
+                    || c == 46  // .
+                    || c == 95  // _
+                    || c == 126 // ~
             ) {
                 buf.append(c);
             } else {

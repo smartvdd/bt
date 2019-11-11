@@ -66,13 +66,12 @@ public class IncomingConnectionListener {
                         if (mightAddConnection()) {
                             establishConnection(connectionRoutine);
                         } else {
-                            if (LOGGER.isDebugEnabled()) {
-                                LOGGER.debug("Rejecting incoming connection from {} due to exceeding of connections limit",
-                                        connectionRoutine.getRemoteAddress());
-                            }
+                            LOGGER.info("Rejecting incoming connection from {} due to exceeding of connections limit",
+                                    connectionRoutine.getRemoteAddress());
                             connectionRoutine.cancel();
                         }
-                    }}));
+                    }
+                }));
     }
 
     private void establishConnection(ConnectionRoutine connectionRoutine) {
