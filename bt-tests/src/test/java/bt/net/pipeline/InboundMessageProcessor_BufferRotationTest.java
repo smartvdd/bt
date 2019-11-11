@@ -114,15 +114,13 @@ public class InboundMessageProcessor_BufferRotationTest {
             while ((message = processor.pollMessage()) != null) {
                 byte[] encodedBlock = blocks[(j % encodedPieces.size()) % 10];
                 Piece piece = (Piece) message;
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Inspecting next decoded piece: {}", piece);
-                }
+                LOGGER.info("Inspecting next decoded piece: {}", piece);
                 BufferedData decodedData = bufferedPieceRegistry.getBufferedPiece(piece.getPieceIndex(), piece.getOffset());
                 assertEquals(encodedBlock.length, decodedData.length());
                 byte[] decodedBlock = new byte[decodedData.buffer().remaining()];
                 decodedData.buffer().get(decodedBlock);
                 assertArrayEquals(
-                        "\nExpect: "+Arrays.toString(encodedBlock)+"\nActual: "+Arrays.toString(decodedBlock),
+                        "\nExpect: " + Arrays.toString(encodedBlock) + "\nActual: " + Arrays.toString(decodedBlock),
                         encodedBlock, decodedBlock);
                 decodedData.dispose();
                 j++;

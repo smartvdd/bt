@@ -42,7 +42,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
- *<p><b>Note that this class implements a service.
+ * <p><b>Note that this class implements a service.
  * Hence, is not a part of the public API and is a subject to change.</b></p>
  */
 public class PeerConnectionPool implements IPeerConnectionPool {
@@ -110,22 +110,18 @@ public class PeerConnectionPool implements IPeerConnectionPool {
         connectionLock.lock();
         try {
             if (connections.count() >= config.getMaxPeerConnections()) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Closing newly created connection with {} due to exceeding of connections limit",
-                            newConnection.getRemotePeer());
-                }
+                LOGGER.info("Closing newly created connection with {} due to exceeding of connections limit",
+                        newConnection.getRemotePeer());
                 newConnection.closeQuietly();
             } else {
                 List<PeerConnection> connectionsWithSameAddress =
                         getConnectionsForAddress(newConnection.getTorrentId(), newConnection.getRemotePeer());
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Checking duplicate connections for newly established" +
-                            " connection with peer: {} (established remote port: {})." +
-                            " All connections:\n{}", newConnection.getRemotePeer(), newConnection.getRemotePort(),
-                            connectionsWithSameAddress.stream()
-                                    .map(Object::toString)
-                                    .collect(Collectors.joining("\n")));
-                }
+                LOGGER.info("Checking duplicate connections for newly established" +
+                                " connection with peer: {} (established remote port: {})." +
+                                " All connections:\n{}", newConnection.getRemotePeer(), newConnection.getRemotePort(),
+                        connectionsWithSameAddress.stream()
+                                .map(Object::toString)
+                                .collect(Collectors.joining("\n")));
                 for (PeerConnection connection : connectionsWithSameAddress) {
                     if (!connection.getRemotePeer().isPortUnknown()
                             && connection.getRemotePeer().getPort() == newConnection.getRemotePeer().getPort()) {
@@ -143,10 +139,8 @@ public class PeerConnectionPool implements IPeerConnectionPool {
             connectionLock.unlock();
         }
         if (existingConnection != null) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Connection already exists for peer {} (established remote port {})",
-                        newConnection.getRemotePeer(), existingConnection.getRemotePort());
-            }
+            LOGGER.info("Connection already exists for peer {} (established remote port {})",
+                    newConnection.getRemotePeer(), existingConnection.getRemotePort());
             return existingConnection;
         } else {
             eventSink.firePeerConnected(connectionKey);
@@ -159,12 +153,10 @@ public class PeerConnectionPool implements IPeerConnectionPool {
         connectionLock.lock();
         try {
             List<PeerConnection> connectionsWithSameAddress = getConnectionsForAddress(torrentId, peer);
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Checking duplicate connections for newly discovered peer: {}." +
-                        " All connections:\n{}", peer, connectionsWithSameAddress.stream()
-                        .map(Object::toString)
-                        .collect(Collectors.joining("\n")));
-            }
+            LOGGER.info("Checking duplicate connections for newly discovered peer: {}." +
+                    " All connections:\n{}", peer, connectionsWithSameAddress.stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining("\n")));
             PeerConnection outgoingConnection = null;
             PeerConnection incomingConnection = null;
             for (PeerConnection connection : connectionsWithSameAddress) {
@@ -179,12 +171,10 @@ public class PeerConnectionPool implements IPeerConnectionPool {
             }
             if (outgoingConnection != null && incomingConnection != null) {
                 // always prefer to keep outgoing connections
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Closing duplicate incoming connection with {}:{}" +
-                                    " (established remote port {})",
-                            incomingConnection.getRemotePeer().getInetAddress(), outgoingConnection.getRemotePort(),
-                            incomingConnection.getRemotePort());
-                }
+                LOGGER.info("Closing duplicate incoming connection with {}:{}" +
+                                " (established remote port {})",
+                        incomingConnection.getRemotePeer().getInetAddress(), outgoingConnection.getRemotePort(),
+                        incomingConnection.getRemotePort());
                 incomingConnection.closeQuietly();
             }
         } finally {
@@ -219,9 +209,7 @@ public class PeerConnectionPool implements IPeerConnectionPool {
                     } else if (System.currentTimeMillis() - connection.getLastActive()
                             >= peerConnectionInactivityThreshold.toMillis()) {
 
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Removing inactive peer connection: {}", connection.getRemotePeer());
-                        }
+                        LOGGER.info("Removing inactive peer connection: {}", connection.getRemotePeer());
                         purgeConnection(connection);
                     }
                     // can send keep-alives here based on lastActiveTime

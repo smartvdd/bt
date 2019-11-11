@@ -76,9 +76,7 @@ public class MldhtService implements DHTService {
         return new DHTLogger() {
             @Override
             public void log(String message, LogLevel level) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("<" + level.name().toUpperCase() + "> " + message);
-                }
+                LOGGER.info("<" + level.name().toUpperCase() + "> " + message);
             }
 
             @Override
@@ -156,9 +154,7 @@ public class MldhtService implements DHTService {
                     }
                     boolean bothAnyLocal = address.isAnyLocalAddress() && localAddress.isAnyLocalAddress();
                     couldUse = bothAnyLocal || localAddress.equals(address);
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Filtering addresses to bind DHT server to.. Checking " + address + ".. Could use: " + couldUse);
-                    }
+                    LOGGER.info("Filtering addresses to bind DHT server to.. Checking " + address + ".. Could use: " + couldUse);
                     couldUseCacheMap.put(address, couldUse);
                     return couldUse;
                 };

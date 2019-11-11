@@ -45,7 +45,7 @@ public class ChainProcessor<C extends ProcessingContext> implements Processor<C>
      * Create processor for a given processing chain.
      *
      * @param chainHead First stage
-     * @param executor Asynchronous facility to use for executing the processing chain
+     * @param executor  Asynchronous facility to use for executing the processing chain
      * @since 1.5
      */
     public ChainProcessor(ProcessingStage<C> chainHead,
@@ -57,7 +57,7 @@ public class ChainProcessor<C extends ProcessingContext> implements Processor<C>
      * Create processor for a given processing chain.
      *
      * @param chainHead First stage
-     * @param executor Asynchronous facility to use for executing the processing chain
+     * @param executor  Asynchronous facility to use for executing the processing chain
      * @param finalizer Context finalizer, that will be called,
      *                  when torrent processing completes normally or terminates abruptly due to error
      * @since 1.5
@@ -69,8 +69,8 @@ public class ChainProcessor<C extends ProcessingContext> implements Processor<C>
     }
 
     private ChainProcessor(ProcessingStage<C> chainHead,
-                          ExecutorService executor,
-                          Optional<ContextFinalizer<C>> finalizer) {
+                           ExecutorService executor,
+                           Optional<ContextFinalizer<C>> finalizer) {
         this.chainHead = chainHead;
         this.finalizer = finalizer;
         this.executor = executor;
@@ -102,18 +102,14 @@ public class ChainProcessor<C extends ProcessingContext> implements Processor<C>
     private ProcessingStage<C> doExecute(ProcessingStage<C> stage,
                                          C context,
                                          Collection<BiFunction<C, ProcessingStage<C>, ProcessingStage<C>>> listeners) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(String.format("Processing next stage: torrent ID (%s), stage (%s)",
-                    context.getTorrentId().orElse(null), stage.getClass().getName()));
-        }
+        LOGGER.info(String.format("Processing next stage: torrent ID (%s), stage (%s)",
+                context.getTorrentId().orElse(null), stage.getClass().getName()));
 
         ProcessingStage<C> next;
         try {
             next = stage.execute(context);
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(String.format("Finished processing stage: torrent ID (%s), stage (%s)",
-                        context.getTorrentId().orElse(null), stage.getClass().getName()));
-            }
+            LOGGER.info(String.format("Finished processing stage: torrent ID (%s), stage (%s)",
+                    context.getTorrentId().orElse(null), stage.getClass().getName()));
         } catch (Exception e) {
             LOGGER.error(String.format("Processing failed with error: torrent ID (%s), stage (%s)",
                     context.getTorrentId().orElse(null), stage.getClass().getName()), e);

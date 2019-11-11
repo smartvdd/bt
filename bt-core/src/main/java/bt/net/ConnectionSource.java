@@ -87,8 +87,8 @@ public class ConnectionSource implements IConnectionSource {
 
         CompletableFuture<ConnectionResult> connection = getExistingOrPendingConnection(key);
         if (connection != null) {
-            if (connection.isDone() && LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Returning existing connection for peer: {}. Torrent: {}", peer, torrentId);
+            if (connection.isDone()) {
+                LOGGER.info("Returning existing connection for peer: {}. Torrent: {}", peer, torrentId);
             }
             return connection;
         }
@@ -96,32 +96,26 @@ public class ConnectionSource implements IConnectionSource {
         Long bannedAt = unreachablePeers.get(peer);
         if (bannedAt != null) {
             if (System.currentTimeMillis() - bannedAt >= config.getUnreachablePeerBanDuration().toMillis()) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Removing temporary ban for unreachable peer: {}", peer);
-                }
+                LOGGER.info("Removing temporary ban for unreachable peer: {}", peer);
                 unreachablePeers.remove(peer);
             } else {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Will not attempt to establish connection to peer: {}. " +
-                            "Reason: peer is unreachable. Torrent: {}", peer, torrentId);
-                }
+                LOGGER.info("Will not attempt to establish connection to peer: {}. " +
+                        "Reason: peer is unreachable. Torrent: {}", peer, torrentId);
                 return CompletableFuture.completedFuture(ConnectionResult.failure("Peer is unreachable"));
             }
         }
 
         if (connectionPool.size() >= config.getMaxPeerConnections()) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Will not attempt to establish connection to peer: {}. " +
-                        "Reason: connections limit exceeded. Torrent: {}", peer, torrentId);
-            }
+            LOGGER.info("Will not attempt to establish connection to peer: {}. " +
+                    "Reason: connections limit exceeded. Torrent: {}", peer, torrentId);
             return CompletableFuture.completedFuture(ConnectionResult.failure("Connections limit exceeded"));
         }
 
         synchronized (pendingConnections) {
             connection = getExistingOrPendingConnection(key);
             if (connection != null) {
-                if (connection.isDone() && LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Returning existing connection for peer: {}. Torrent: {}", peer, torrentId);
+                if (connection.isDone()) {
+                    LOGGER.info("Returning existing connection for peer: {}. Torrent: {}", peer, torrentId);
                 }
                 return connection;
             }
@@ -147,15 +141,11 @@ public class ConnectionSource implements IConnectionSource {
                 }
             }, connectionExecutor).whenComplete((acquiredConnection, throwable) -> {
                 if (acquiredConnection == null || throwable != null) {
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Peer is unreachable: {}. Will prevent further attempts to establish connection.", peer);
-                    }
+                    LOGGER.info("Peer is unreachable: {}. Will prevent further attempts to establish connection.", peer);
                     unreachablePeers.putIfAbsent(peer, System.currentTimeMillis());
                 }
                 if (throwable != null) {
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Failed to establish outgoing connection to peer: " + peer, throwable);
-                    }
+                    LOGGER.info("Failed to establish outgoing connection to peer: " + peer, throwable);
                 }
             });
 

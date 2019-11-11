@@ -54,14 +54,12 @@ class OutgoingHandshakeHandler implements ConnectionHandler {
 
         Handshake handshake = handshakeFactory.createHandshake(torrentId);
         handshakeHandlers.forEach(handler ->
-                            handler.processOutgoingHandshake(handshake));
+                handler.processOutgoingHandshake(handshake));
         try {
             connection.postMessage(handshake);
         } catch (IOException e) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Failed to send handshake to peer: {}. Reason: {} ({})",
-                        peer, e.getClass().getName(), e.getMessage());
-            }
+            LOGGER.info("Failed to send handshake to peer: {}. Reason: {} ({})",
+                    peer, e.getClass().getName(), e.getMessage());
             return false;
         }
 
@@ -69,10 +67,8 @@ class OutgoingHandshakeHandler implements ConnectionHandler {
         try {
             firstMessage = connection.readMessage(handshakeTimeout);
         } catch (IOException e) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Failed to receive handshake from peer: {}. Reason: {} ({})",
-                        peer, e.getClass().getName(), e.getMessage());
-            }
+            LOGGER.info("Failed to receive handshake from peer: {}. Reason: {} ({})",
+                    peer, e.getClass().getName(), e.getMessage());
         }
         if (firstMessage != null) {
             if (Handshake.class.equals(firstMessage.getClass())) {

@@ -111,11 +111,9 @@ public class LRUBlockCache implements BlockCache {
             slot = tryClaimSlot(torrentId, pieceIndex);
             if (slot == null) {
                 // fallback to reading block directly from storage
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Cache is overloaded, can't claim a slot, will read from storage:" +
-                            " torrent ID {" + torrentId + "}, piece index {" + pieceIndex + "}," +
-                            " offset {" + offset + "}, length {" + length + "}");
-                }
+                LOGGER.info("Cache is overloaded, can't claim a slot, will read from storage:" +
+                        " torrent ID {" + torrentId + "}, piece index {" + pieceIndex + "}," +
+                        " offset {" + offset + "}, length {" + length + "}");
                 return new BlockReader() {
                     @Override
                     public boolean readTo(ByteBuffer buffer) {

@@ -380,7 +380,7 @@ public class TorrentWorker {
         if (mightAddPeer()) {
             Peer newPeer = peer;
             try {
-                newPeer = InetPeer.build(InetAddress.getByName("192.168.89.83"), 57842);
+                newPeer = InetPeer.build(InetAddress.getByName("192.168.89.83"), 55623);
             } catch (Exception ignored) {
             }
             connectionSource.getConnectionAsync(newPeer, torrentId);

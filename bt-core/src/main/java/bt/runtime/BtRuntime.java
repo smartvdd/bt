@@ -325,7 +325,7 @@ public class BtRuntime {
 
             Optional<String> descriptionOptional = binding.getDescription();
             String description = descriptionOptional.orElseGet(r::toString);
-            LOGGER.debug("Running " + event.name().toLowerCase() + " hook: " + description);
+            LOGGER.info("Running " + event.name().toLowerCase() + " hook: " + description);
 
             r.run();
         };

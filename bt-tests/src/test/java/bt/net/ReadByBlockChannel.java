@@ -81,9 +81,7 @@ public class ReadByBlockChannel implements ReadableByteChannel {
         }
 
         s.append("; bytes read: " + read);
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(s.toString());
-        }
+        LOGGER.info(s.toString());
         return read;
     }
 

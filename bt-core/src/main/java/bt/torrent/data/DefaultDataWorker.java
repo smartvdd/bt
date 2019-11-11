@@ -76,14 +76,12 @@ public class DefaultDataWorker implements DataWorker {
     public CompletableFuture<BlockRead> addBlockRequest(TorrentId torrentId, Peer peer, int pieceIndex, int offset, int length) {
         DataDescriptor data = getDataDescriptor(torrentId);
         if (!data.getBitfield().isVerified(pieceIndex)) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Rejecting request to read block because the piece is not verified yet:" +
-                        " piece index {" + pieceIndex + "}, offset {" + offset + "}, length {" + length + "}, peer {" + peer + "}");
-            }
+            LOGGER.info("Rejecting request to read block because the piece is not verified yet:" +
+                    " piece index {" + pieceIndex + "}, offset {" + offset + "}, length {" + length + "}, peer {" + peer + "}");
             return CompletableFuture.completedFuture(BlockRead.rejected(peer, pieceIndex, offset, length));
         } else if (!tryIncrementTaskCount()) {
             LOGGER.warn("Rejecting request to read block because the queue is full:" +
-                    " piece index {"+pieceIndex+"}, offset {"+offset+"}, length {"+length+"}, peer {"+peer+"}");
+                    " piece index {" + pieceIndex + "}, offset {" + offset + "}, length {" + length + "}, peer {" + peer + "}");
             return CompletableFuture.completedFuture(BlockRead.exceptional(peer,
                     QUEUE_FULL_EXCEPTION, pieceIndex, offset, length));
         }
@@ -117,11 +115,9 @@ public class DefaultDataWorker implements DataWorker {
                 ChunkDescriptor chunk = data.getChunkDescriptors().get(pieceIndex);
 
                 if (chunk.isComplete()) {
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Rejecting request to write block because" +
-                                " the chunk is already complete and verified (or awaiting verification): " +
-                                "piece index {" + pieceIndex + "}, offset {" + offset + "}, length {" + buffer.length() + "}");
-                    }
+                    LOGGER.info("Rejecting request to write block because" +
+                            " the chunk is already complete and verified (or awaiting verification): " +
+                            "piece index {" + pieceIndex + "}, offset {" + offset + "}, length {" + buffer.length() + "}");
                     return BlockWrite.rejected(peer, pieceIndex, offset, buffer.length());
                 }
 

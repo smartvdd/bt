@@ -39,12 +39,10 @@ public class ExtendedHandshakeConsumer {
         BEInteger peerListeningPort = message.getPort();
         if (peerListeningPort != null) {
             InetPeer peer = (InetPeer) messageContext.getConnectionKey().getPeer();
-            int listeningPort = peerListeningPort.getValue().intValueExact();
+            int listeningPort = peerListeningPort.getValue().intValue();
             peer.setPort(listeningPort);
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Updating listening port for peer {}:{} to {}",
-                        peer.getInetAddress(), messageContext.getConnectionKey().getRemotePort(), listeningPort);
-            }
+            LOGGER.info("Updating listening port for peer {}:{} to {}",
+                    peer.getInetAddress(), messageContext.getConnectionKey().getRemotePort(), listeningPort);
             connectionPool.checkDuplicateConnections(messageContext.getConnectionKey().getTorrentId(), peer);
         }
     }

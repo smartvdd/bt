@@ -82,7 +82,7 @@ public class BEEncoder {
 
         BigInteger value = integer.getValue();
         write(out, BEParser.INTEGER_PREFIX);
-        write(out, Integer.toString(value.intValueExact()).getBytes(defaultCharset));
+        write(out, Integer.toString(value.intValue()).getBytes(defaultCharset));
         write(out, BEParser.EOF);
     }
 

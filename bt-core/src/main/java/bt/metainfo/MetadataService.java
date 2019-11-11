@@ -172,14 +172,14 @@ public class MetadataService implements IMetadataService {
             }
 
             BigInteger chunkSize = (BigInteger) infoMap.get(CHUNK_SIZE_KEY).getValue();
-            torrent.setChunkSize(chunkSize.longValueExact());
+            torrent.setChunkSize(chunkSize.longValue());
 
             byte[] chunkHashes = (byte[]) infoMap.get(CHUNK_HASHES_KEY).getValue();
             torrent.setChunkHashes(chunkHashes);
 
             if (infoMap.get(TORRENT_SIZE_KEY) != null) {
                 BigInteger torrentSize = (BigInteger) infoMap.get(TORRENT_SIZE_KEY).getValue();
-                torrent.setSize(torrentSize.longValueExact());
+                torrent.setSize(torrentSize.longValue());
 
             } else {
                 List<BEMap> files = (List<BEMap>) infoMap.get(FILES_KEY).getValue();
@@ -191,7 +191,7 @@ public class MetadataService implements IMetadataService {
                     DefaultTorrentFile torrentFile = new DefaultTorrentFile();
 
                     BigInteger fileSize = (BigInteger) fileMap.get(FILE_SIZE_KEY).getValue();
-                    torrentFile.setSize(fileSize.longValueExact());
+                    torrentFile.setSize(fileSize.longValue());
                     torrentSize = torrentSize.add(fileSize);
 
                     List<BEString> pathElements = (List<BEString>) fileMap.get(FILE_PATH_ELEMENTS_KEY).getValue();
@@ -204,7 +204,7 @@ public class MetadataService implements IMetadataService {
                 }
 
                 torrent.setFiles(torrentFiles);
-                torrent.setSize(torrentSize.longValueExact());
+                torrent.setSize(torrentSize.longValue());
             }
 
             boolean isPrivate = false;
@@ -218,7 +218,7 @@ public class MetadataService implements IMetadataService {
             if (root.get(CREATION_DATE_KEY) != null) {
                 BigInteger epochMilli = (BigInteger) root.get(CREATION_DATE_KEY).getValue();
                 // TODO: some torrents contain bogus values here (like 101010101010), which causes an exception
-                torrent.setCreationDate(Instant.ofEpochMilli(epochMilli.intValueExact() * 1000L));
+                torrent.setCreationDate(Instant.ofEpochMilli(epochMilli.intValue() * 1000L));
             }
 
             if (root.get(CREATED_BY_KEY) != null) {

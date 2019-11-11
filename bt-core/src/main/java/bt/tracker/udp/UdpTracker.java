@@ -135,9 +135,7 @@ class UdpTracker implements Tracker {
                 request.setNumwant(numberOfPeersToRequestFromTracker);
 
                 getRequestString(trackerUrl).ifPresent(request::setRequestString);
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Executing tracker UDP request of type {}: {}", eventType.name(), request);
-                }
+                LOGGER.info("Executing tracker UDP request of type {}: {}", eventType.name(), request);
                 try {
                     return worker.sendMessage(request, AnnounceResponseHandler.handler());
                 } catch (Exception e) {

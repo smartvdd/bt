@@ -94,9 +94,7 @@ public class DefaultChunkVerifier implements ChunkVerifier {
             futures.add(workers.submit(createWorker(chunks, i, Math.min(chunks.length, limit), bitfield)));
         }
 
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Verifying torrent data with {} workers", futures.size());
-        }
+        LOGGER.info("Verifying torrent data with {} workers", futures.size());
 
         Set<Throwable> errors = ConcurrentHashMap.newKeySet();
         futures.forEach(f -> {
