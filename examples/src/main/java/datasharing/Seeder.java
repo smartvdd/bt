@@ -45,9 +45,8 @@ public class Seeder {
         BtClient client = Bt.client()
                 .config(config)
                 .storage(storage)
-                .torrent(Paths.get("/Users", "vdg", "Downloads", "IMG_1141.torrent").toFile().toURI().toURL())
+                .magnet("magnet:?xt=urn:btih:39caae1617420b970853ffedef9a67f21ee7ca19&dn=IMG_1141.JPG")
                 .autoLoadModules()
-                .afterTorrentFetched(torrent -> System.err.println("magnet:?xt=urn:btih:" + torrent.getTorrentId()))
                 .build();
 
         System.err.println("Starting seeder...");

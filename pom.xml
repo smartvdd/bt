@@ -67,8 +67,7 @@
 
         <!-- dependencies versions -->
         <slf4j-version>1.7.25</slf4j-version>
-        <guice-version>4.2.0</guice-version>
-        <guava-version>28.1-android</guava-version>
+        <guice-version>4.1.0</guice-version>
         <junit-version>4.12</junit-version>
         <mockito-version>1.10.19</mockito-version>
         <jimfs-version>1.1</jimfs-version>
@@ -115,11 +114,6 @@
                 <groupId>com.google.inject.extensions</groupId>
                 <artifactId>guice-multibindings</artifactId>
                 <version>${guice-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava-version}</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>

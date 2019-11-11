@@ -35,7 +35,7 @@ import java.util.function.Consumer;
  *
  * @since 1.0
  */
-class DefaultClient<C extends ProcessingContext> implements BtClient {
+public class DefaultClient<C extends ProcessingContext> implements BtClient {
 
     private BtRuntime runtime;
     private Processor<C> processor;
