@@ -85,12 +85,29 @@ public class BtRuntime {
 
     private Injector injector;
     private Config config;
+    private IRuntimeLifecycleBinder lifecycleBinder;
     private Set<BtClient> knownClients;
     private ExecutorService clientExecutor;
     private AtomicBoolean started;
     private final Object lock;
 
     private boolean manualShutdownOnly;
+
+    public BtRuntime(Config config, ExecutorService executorService, IRuntimeLifecycleBinder lifecycleBinder) {
+        Runtime.getRuntime().addShutdownHook(new Thread("bt.runtime.shutdown-manager") {
+            @Override
+            public void run() {
+                shutdown();
+            }
+        });
+
+        this.config = config;
+        this.lifecycleBinder = lifecycleBinder;
+        this.knownClients = ConcurrentHashMap.newKeySet();
+        this.clientExecutor = executorService;
+        this.started = new AtomicBoolean(false);
+        this.lock = new Object();
+    }
 
     BtRuntime(Injector injector, Config config) {
         Runtime.getRuntime().addShutdownHook(new Thread("bt.runtime.shutdown-manager") {
@@ -206,7 +223,7 @@ public class BtRuntime {
      * Manually initiate the runtime shutdown procedure, which includes:
      * - stopping all attached clients
      * - stopping all workers and executors, that were created inside this runtime
-     *   and registered via {@link IRuntimeLifecycleBinder}
+     * and registered via {@link IRuntimeLifecycleBinder}
      *
      * @since 1.0
      */
@@ -233,7 +250,8 @@ public class BtRuntime {
         Map<LifecycleBinding, CompletableFuture<Void>> futures = new HashMap<>();
         List<LifecycleBinding> syncBindings = new ArrayList<>();
 
-        service(IRuntimeLifecycleBinder.class).visitBindings(
+        IRuntimeLifecycleBinder binder = lifecycleBinder != null ? lifecycleBinder : service(IRuntimeLifecycleBinder.class);
+        binder.visitBindings(
                 event,
                 binding -> {
                     if (binding.isAsync()) {

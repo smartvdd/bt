@@ -32,7 +32,7 @@ public class PeerCache implements IPeerCache {
     private final ConcurrentMap<InetSocketAddress, UpdatablePeer> knownPeers;
     private final ReentrantLock peerLock;
 
-    PeerCache() {
+    public PeerCache() {
         this.knownPeers = new ConcurrentHashMap<>();
         this.peerLock = new ReentrantLock();
     }

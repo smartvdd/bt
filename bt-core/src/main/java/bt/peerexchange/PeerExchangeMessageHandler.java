@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Collections;
 
-class PeerExchangeMessageHandler implements MessageHandler<PeerExchange> {
+public class PeerExchangeMessageHandler implements MessageHandler<PeerExchange> {
 
     private final Collection<Class<? extends PeerExchange>> supportedTypes;
 
