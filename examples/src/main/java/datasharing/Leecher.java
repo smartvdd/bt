@@ -53,11 +53,11 @@ public class Leecher {
             }
         });
 
-        Storage storage = new FileSystemStorage(Paths.get("/Users", "sadpotato", "Downloads", "seeder"));
+        Storage storage = new FileSystemStorage(Paths.get("/Users", "vdg", "Downloads"));
         BtClient client = Bt.client()
                 .config(config)
                 .storage(storage)
-                .magnet("magnet:?xt=urn:btih:5dbde2ccce0bcdd9d9ca30b2db3c1bb51b9b7410")
+                .magnet("magnet:?xt=urn:btih:9dab6d80a93725614fbc9853f1f420de98943b76&dn=IMG_20191024_142106.jpg&x.pe=192.168.89.83:55623")
                 .autoLoadModules()
                 .module(dhtModule)
                 .stopWhenDownloaded()

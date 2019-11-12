@@ -50,7 +50,9 @@ import bt.tracker.TrackerFactory;
 import bt.tracker.TrackerService;
 import bt.tracker.http.HttpTrackerFactory;
 import bt.tracker.udp.UdpTrackerFactory;
+import com.google.inject.Module;
 import com.google.inject.Provider;
+import datasharing.Seeder;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -75,19 +77,23 @@ public class MagnetSample {
     }
 
     public static void download(Storage storage) {
-        // enable multithreaded verification of torrent data
+
         Config config = new Config() {
             @Override
             public int getNumOfHashingThreads() {
                 return Runtime.getRuntime().availableProcessors() * 2;
             }
+
+            @Override
+            public int getAcceptorPort() {
+                return 6991;
+            }
         };
 
-// enable bootstrapping from public routers
         DHTConfig dhtConfig = new DHTConfig() {
             @Override
-            public boolean shouldUseRouterBootstrap() {
-                return true;
+            public Collection<InetPeerAddress> getBootstrapNodes() {
+                return Collections.singleton(new InetPeerAddress(config.getAcceptorAddress().getHostAddress(), Seeder.PORT));
             }
         };
 
