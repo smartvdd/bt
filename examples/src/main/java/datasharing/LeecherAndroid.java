@@ -1,3 +1,5 @@
+package datasharing;
+
 import bt.DefaultClient;
 import bt.data.*;
 import bt.data.digest.Digester;
@@ -63,7 +65,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
-public class MagnetSample {
+public class LeecherAndroid {
 
     public static IPeerRegistry peerRegistry;
 
