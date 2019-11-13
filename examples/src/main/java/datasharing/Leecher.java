@@ -57,7 +57,7 @@ public class Leecher {
         BtClient client = Bt.client()
                 .config(config)
                 .storage(storage)
-                .magnet("magnet:?xt=urn:btih:9dab6d80a93725614fbc9853f1f420de98943b76&dn=IMG_20191024_142106.jpg&x.pe=192.168.89.83:55623")
+                .magnet("magnet:?xt=urn:btih:56a7f237e98fed724076bc20b18659ceecf204e3")
                 .autoLoadModules()
                 .module(dhtModule)
                 .stopWhenDownloaded()

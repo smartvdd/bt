@@ -20,6 +20,7 @@ import bt.net.pipeline.ChannelPipelineFactory;
 import bt.net.pipeline.IChannelPipelineFactory;
 import bt.net.portmapping.PortMapper;
 import bt.net.portmapping.impl.NoOpPortMapper;
+import bt.net.portmapping.impl.PortMappingInitializer;
 import bt.peer.*;
 import bt.peer.lan.*;
 import bt.peerexchange.PeerExchangeConfig;
@@ -27,6 +28,7 @@ import bt.peerexchange.PeerExchangeMessageHandler;
 import bt.peerexchange.PeerExchangePeerSourceFactory;
 import bt.processor.ProcessingContext;
 import bt.processor.Processor;
+import bt.processor.ProcessorFactory;
 import bt.processor.TorrentProcessorFactory;
 import bt.processor.listener.ListenerSource;
 import bt.processor.listener.ProcessingEvent;
@@ -70,15 +72,16 @@ public class LeecherAndroid {
     public static IPeerRegistry peerRegistry;
 
     public static void main(String[] args) {
-// get download directory
+        // get download directory
         Path targetDirectory = Paths.get("/Users", "vdg", "Downloads");
 
-// create file system based backend for torrent data
+        // create file system based backend for torrent data
         Storage storage = new FileSystemStorage(targetDirectory);
-        download(storage);
+        String magnetLink = "magnet:?xt=urn:btih:56a7f237e98fed724076bc20b18659ceecf204e3&x.pe=192.168.88.169:6891";
+        download(magnetLink, storage);
     }
 
-    public static void download(Storage storage) {
+    public static void download(String magnetLink, Storage storage) {
 
         Config config = new Config() {
             @Override
@@ -99,7 +102,7 @@ public class LeecherAndroid {
             }
         };
 
-        MagnetUri magnetUri = MagnetUriParser.lenientParser().parse("magnet:?xt=urn:btih:9dab6d80a93725614fbc9853f1f420de98943b76&dn=IMG_20191024_142106.jpg&x.pe=192.168.89.83:55623");
+        MagnetUri magnetUri = MagnetUriParser.lenientParser().parse(magnetLink);
         PieceSelector pieceSelector = RarestFirstSelector.randomizedRarest();
         TorrentContext context = new MagnetContext(magnetUri, pieceSelector, storage);
 
@@ -188,7 +191,8 @@ public class LeecherAndroid {
         messagingAgents.add(extraPeerSourceFactories);
         IMetadataService metadataService = new MetadataService();
         IDataWorkerFactory dataWorkerFactory = new DataWorkerFactory(lifecycleBinder, verifier, config.getMaxIOQueueSize());
-        TorrentProcessorFactory processorFactory = new TorrentProcessorFactory(torrentRegistry, dataWorkerFactory, trackerService, executor, peerRegistry,
+        PortMappingInitializer portMappingInitializer = new PortMappingInitializer(portMappers, lifecycleBinder, config); //Subscribe inside constructor
+        ProcessorFactory processorFactory = new TorrentProcessorFactory(torrentRegistry, dataWorkerFactory, trackerService, executor, peerRegistry,
                 connectionSource, messageDispatcher, messagingAgents, metadataService, eventSource, eventSource, config);
 
         Class<? extends ProcessingContext> contextType = context.getClass();
@@ -199,15 +203,6 @@ public class LeecherAndroid {
 
         BtRuntime btRuntime = new BtRuntime(config, executor, lifecycleBinder);
         DefaultClient<MagnetContext> client = new DefaultClient(btRuntime, processor, context, listenerSource);
-// create client with a private runtime
-        /*BtClient client = Bt.client()
-                .config(config)
-                .storage(storage)
-                .magnet("magnet:?xt=urn:btih:9dab6d80a93725614fbc9853f1f420de98943b76&dn=IMG_20191024_142106.jpg")
-                .autoLoadModules()
-                .module(dhtModule)
-                .stopWhenDownloaded()
-                .build();*/
 
 // launch
         client.startAsync().join();
